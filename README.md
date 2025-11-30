@@ -1,28 +1,1001 @@
 # huelladecarbono.github.io
 # Nombre del Proyecto
 
-[![Estado](https://img.shields.io/badge/estado-en%20desarrollo-yellow)](https://github.com/tu-usuario/tu-repositorio)
-[![Licencia](https://img.shields.io/badge/licencia-MIT-blue)](https://opensource.org/licenses/MIT)
-[![Versión](https://img.shields.io/badge/versión-1.0.0-green)](https://github.com/tu-usuario/tu-repositorio/releases)
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matriz AIA - Análisis de Impacto Ambiental | Ecuador</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #117a65;
+            --secondary-color: #16a085;
+            --accent-color: #1abc9c;
+            --light-color: #e8f8f5;
+            --dark-color: #0e6251;
+            --text-color: #333;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --optimal-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab:hover {
+            background: #e9ecef;
+        }
+        
+        .tab.active {
+            background: white;
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+        
+        .help-text {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background-color: var(--dark-color);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        
+        .btn-download {
+            background-color: #1976d2;
+        }
+        
+        .btn-download:hover {
+            background-color: #1565c0;
+        }
+        
+        .matrix-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        
+        .matrix-table th, .matrix-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .matrix-table th {
+            background-color: var(--light-color);
+            font-weight: 600;
+        }
+        
+        .matrix-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .impact-low {
+            background-color: #e8f5e9;
+            color: var(--optimal-color);
+            font-weight: 600;
+        }
+        
+        .impact-medium {
+            background-color: #fff3e0;
+            color: var(--warning-color);
+            font-weight: 600;
+        }
+        
+        .impact-high {
+            background-color: #ffebee;
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border-left: 5px solid var(--secondary-color);
+        }
+        
+        .summary-card h3 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+        
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .compliance-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .badge-low {
+            background-color: #e8f5e9;
+            color: var(--optimal-color);
+        }
+        
+        .badge-medium {
+            background-color: #fff3e0;
+            color: var(--warning-color);
+        }
+        
+        .badge-high {
+            background-color: #ffebee;
+            color: var(--danger-color);
+        }
+        
+        .action-plan {
+            margin: 20px 0;
+        }
+        
+        .action-item {
+            background: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .action-priority {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .priority-high {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .priority-medium {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .priority-low {
+            background-color: var(--optimal-color);
+            color: white;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .download-loading {
+            display: none;
+        }
+        
+        .download-spinner {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Matriz AIA - Análisis de Impacto Ambiental</h1>
+            <p class="description">Sistema integral de evaluación de impacto ambiental para empresas ecuatorianas</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="calculator">Calculadora Huella</button>
+            <button class="tab" data-tab="matrix">Matriz AIA</button>
+            <button class="tab" data-tab="results">Resultados</button>
+            <button class="tab" data-tab="actions">Plan de Acción</button>
+        </div>
+        
+        <!-- Pestaña Calculadora de Huella -->
+        <div class="tab-content active" id="calculator">
+            <h2 class="section-title">Calculadora de Huella Ambiental</h2>
+            
+            <div class="form-group">
+                <label for="company-name">Nombre de la Empresa</label>
+                <input type="text" id="company-name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="sector">Sector Industrial</label>
+                <select id="sector" required>
+                    <option value="">Selecciona el sector</option>
+                    <option value="manufactura">Manufactura</option>
+                    <option value="agricultura">Agricultura</option>
+                    <option value="ganaderia">Ganadería</option>
+                    <option value="mineria">Minería</option>
+                    <option value="construccion">Construcción</option>
+                    <option value="comercio">Comercio</option>
+                    <option value="servicios">Servicios</option>
+                    <option value="turismo">Turismo</option>
+                    <option value="alimentos">Procesamiento de Alimentos</option>
+                    <option value="textil">Textil</option>
+                    <option value="quimica">Industria Química</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="employees">Número de Empleados</label>
+                <input type="number" id="employees" min="1" value="10" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="province">Provincia</label>
+                <select id="province" required>
+                    <option value="">Selecciona la provincia</option>
+                    <option value="pichincha">Pichincha</option>
+                    <option value="guayas">Guayas</option>
+                    <option value="azuay">Azuay</option>
+                    <option value="manabi">Manabí</option>
+                    <option value="tungurahua">Tungurahua</option>
+                    <option value="eloro">El Oro</option>
+                    <option value="imbabura">Imbabura</option>
+                    <option value="loja">Loja</option>
+                    <option value="chimborazo">Chimborazo</option>
+                    <option value="otra">Otra</option>
+                </select>
+            </div>
+            
+            <h3 class="section-title">Consumos y Emisiones</h3>
+            
+            <div class="form-group">
+                <label for="electricity">Consumo mensual de electricidad (kWh)</label>
+                <input type="number" id="electricity" min="0" step="100" value="5000" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="fuel">Consumo mensual de combustibles (litros)</label>
+                <input type="number" id="fuel" min="0" step="100" value="1000" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="fuel-type">Tipo de combustible principal</label>
+                <select id="fuel-type" required>
+                    <option value="diesel">Diesel</option>
+                    <option value="gasolina">Gasolina</option>
+                    <option value="gas_natural">Gas Natural</option>
+                    <option value="glp">GLP</option>
+                    <option value="biodiesel">Biodiesel</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="water">Consumo mensual de agua (m³)</label>
+                <input type="number" id="water" min="0" step="10" value="100" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="waste">Generación mensual de residuos (kg)</label>
+                <input type="number" id="waste" min="0" step="100" value="500" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="hazardous-waste">Generación mensual de residuos peligrosos (kg)</label>
+                <input type="number" id="hazardous-waste" min="0" step="10" value="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="transport">Kilómetros mensuales de transporte</label>
+                <input type="number" id="transport" min="0" step="100" value="2000" required>
+            </div>
+            
+            <button class="btn" id="calculate-btn">
+                <span class="download-loading" id="calculate-loading">
+                    <span class="download-spinner"></span>
+                </span>
+                Calcular Huella Ambiental
+            </button>
+        </div>
+        
+        <!-- Pestaña Matriz AIA -->
+        <div class="tab-content" id="matrix">
+            <h2 class="section-title">Matriz de Identificación de Impactos Ambientales</h2>
+            <p>Complete la evaluación de impactos ambientales para cada aspecto identificado:</p>
+            
+            <div class="matrix-container">
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>Aspecto Ambiental</th>
+                            <th>Actividad</th>
+                            <th>Impacto</th>
+                            <th>Significancia 
+                                <span class="tooltip">?
+                                    <span class="tooltiptext">1=Bajo, 2=Medio, 3=Alto, 4=Muy Alto</span>
+                                </span>
+                            </th>
+                            <th>Probabilidad
+                                <span class="tooltip">?
+                                    <span class="tooltiptext">1=Rara, 2=Ocasional, 3=Frecuente, 4=Constante</span>
+                                </span>
+                            </th>
+                            <th>Severidad
+                                <span class="tooltip">?
+                                    <span class="tooltiptext">1=Insignificante, 2=Menor, 3=Moderada, 4=Severa</span>
+                                </span>
+                            </th>
+                            <th>Puntaje Total</th>
+                            <th>Nivel de Impacto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matrix-body">
+                        <!-- Se llenará dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <button class="btn" id="evaluate-impacts">Evaluar Impactos</button>
+        </div>
+        
+        <!-- Pestaña Resultados -->
+        <div class="tab-content" id="results">
+            <h2 class="section-title">Resultados del Análisis Ambiental</h2>
+            
+            <div class="loading" id="results-loading">
+                <div class="spinner"></div>
+                <p>Generando resultados del análisis...</p>
+            </div>
+            
+            <div id="results-content" style="display: none;">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3>Huella de Carbono</h3>
+                        <div class="summary-value" id="result-carbon">0 t CO₂e</div>
+                        <p>Anual</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Huella Hídrica</h3>
+                        <div class="summary-value" id="result-water">0 m³</div>
+                        <p>Anual</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Residuos Generados</h3>
+                        <div class="summary-value" id="result-waste">0 kg</div>
+                        <p>Anual</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Impacto Ambiental Total</h3>
+                        <div class="summary-value" id="result-total-impact">0</div>
+                        <p>Puntaje AIA</p>
+                    </div>
+                </div>
+                
+                <h3 class="section-title">Resumen de Cumplimiento</h3>
+                <div id="compliance-summary">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+                
+                <h3 class="section-title">Impactos Significativos Identificados</h3>
+                <div id="significant-impacts">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+                
+                <div class="report-download" style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-download" id="download-full-report">
+                        <span class="download-loading" id="download-loading">
+                            <span class="download-spinner"></span>
+                        </span>
+                        Descargar Reporte Completo AIA
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pestaña Plan de Acción -->
+        <div class="tab-content" id="actions">
+            <h2 class="section-title">Plan de Acción Ambiental</h2>
+            
+            <div id="action-plan-content">
+                <div class="action-plan">
+                    <div class="action-item">
+                        <span class="action-priority priority-high">ALTA</span>
+                        <strong>Implementar sistema de gestión de residuos peligrosos</strong>
+                        <p>Establecer procedimientos para el manejo, almacenamiento y disposición de residuos peligrosos según normativa ecuatoriana.</p>
+                        <p><strong>Plazo:</strong> 3 meses</p>
+                    </div>
+                    
+                    <div class="action-item">
+                        <span class="action-priority priority-medium">MEDIA</span>
+                        <strong>Optimización del consumo energético</strong>
+                        <p>Realizar auditoría energética e implementar medidas de eficiencia energética en procesos productivos.</p>
+                        <p><strong>Plazo:</strong> 6 meses</p>
+                    </div>
+                    
+                    <div class="action-item">
+                        <span class="action-priority priority-low">BAJA</span>
+                        <strong>Capacitación en prácticas ambientales</strong>
+                        <p>Desarrollar programa de capacitación para empleados sobre buenas prácticas ambientales y manejo de recursos.</p>
+                        <p><strong>Plazo:</strong> 12 meses</p>
+                    </div>
+                </div>
+                
+                <button class="btn" id="generate-action-plan">Generar Plan Personalizado</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Matriz AIA - Sistema de Análisis de Impacto Ambiental © 2023 | Basado en normativa del Ministerio del Ambiente, Agua y Transición Ecológica del Ecuador</p>
+        </footer>
+    </div>
 
-Una breve descripción de tu proyecto - qué hace, para quién es y por qué es útil.
-
-## 🚀 Características
-
-- **Característica 1**: Descripción breve de la característica
-- **Característica 2**: Descripción breve de la característica  
-- **Característica 3**: Descripción breve de la característica
-- **Característica 4**: Descripción breve de la característica
-
-## 📦 Instalación
-
-### Prerrequisitos
-- Python 3.8+ (o los requisitos de tu proyecto)
-- Git
-
-### Pasos de instalación
-
-1. **Clonar el repositorio**
-   ```bash
-   git clone https://github.com/tu-usuario/tu-repositorio.git
-   cd tu-repositorio
+    <script>
+        // Variables globales
+        let currentAIAnalysis = null;
+        let matrixData = [];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuración de pestañas
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Remover clase active de todas las pestañas y contenidos
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    
+                    // Agregar clase active a la pestaña y contenido seleccionados
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Inicializar matriz AIA
+            initializeMatrix();
+            
+            // Configurar eventos de botones
+            document.getElementById('calculate-btn').addEventListener('click', calculateEnvironmentalFootprint);
+            document.getElementById('evaluate-impacts').addEventListener('click', evaluateImpacts);
+            document.getElementById('generate-action-plan').addEventListener('click', generateActionPlan);
+            document.getElementById('download-full-report').addEventListener('click', downloadFullReport);
+        });
+        
+        function initializeMatrix() {
+            const matrixBody = document.getElementById('matrix-body');
+            const aspects = [
+                { aspect: "Emisiones atmosféricas", activity: "Combustión en procesos", impact: "Contaminación del aire" },
+                { aspect: "Consumo de agua", activity: "Procesos productivos", impact: "Agotamiento de recursos hídricos" },
+                { aspect: "Generación de residuos sólidos", activity: "Operaciones generales", impact: "Contaminación del suelo" },
+                { aspect: "Generación de residuos peligrosos", activity: "Manejo de químicos", impact: "Contaminación peligrosa" },
+                { aspect: "Consumo energético", activity: "Operación de equipos", impact: "Agotamiento de recursos" },
+                { aspect: "Ruido", activity: "Operación de maquinaria", impact: "Contaminación acústica" },
+                { aspect: "Vertidos líquidos", activity: "Procesos con agua", impact: "Contaminación de cuerpos de agua" },
+                { aspect: "Uso de recursos naturales", activity: "Extracción de materias primas", impact: "Agotamiento de recursos" }
+            ];
+            
+            matrixBody.innerHTML = '';
+            matrixData = [];
+            
+            aspects.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.aspect}</td>
+                    <td>${item.activity}</td>
+                    <td>${item.impact}</td>
+                    <td>
+                        <select class="significance" data-index="${index}">
+                            <option value="1">1 - Bajo</option>
+                            <option value="2" selected>2 - Medio</option>
+                            <option value="3">3 - Alto</option>
+                            <option value="4">4 - Muy Alto</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="probability" data-index="${index}">
+                            <option value="1">1 - Rara</option>
+                            <option value="2" selected>2 - Ocasional</option>
+                            <option value="3">3 - Frecuente</option>
+                            <option value="4">4 - Constante</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="severity" data-index="${index}">
+                            <option value="1">1 - Insignificante</option>
+                            <option value="2" selected>2 - Menor</option>
+                            <option value="3">3 - Moderada</option>
+                            <option value="4">4 - Severa</option>
+                        </select>
+                    </td>
+                    <td class="total-score" id="score-${index}">4</td>
+                    <td class="impact-level" id="level-${index}"><span class="compliance-badge badge-low">BAJO</span></td>
+                `;
+                matrixBody.appendChild(row);
+                
+                // Almacenar datos iniciales
+                matrixData.push({
+                    aspect: item.aspect,
+                    activity: item.activity,
+                    impact: item.impact,
+                    significance: 2,
+                    probability: 2,
+                    severity: 2,
+                    totalScore: 4,
+                    impactLevel: 'BAJO'
+                });
+                
+                // Agregar event listeners para los selects
+                const significanceSelect = row.querySelector('.significance');
+                const probabilitySelect = row.querySelector('.probability');
+                const severitySelect = row.querySelector('.severity');
+                
+                significanceSelect.addEventListener('change', updateMatrixScore);
+                probabilitySelect.addEventListener('change', updateMatrixScore);
+                severitySelect.addEventListener('change', updateMatrixScore);
+            });
+        }
+        
+        function updateMatrixScore(event) {
+            const index = event.target.getAttribute('data-index');
+            const significance = parseInt(document.querySelector(`.significance[data-index="${index}"]`).value);
+            const probability = parseInt(document.querySelector(`.probability[data-index="${index}"]`).value);
+            const severity = parseInt(document.querySelector(`.severity[data-index="${index}"]`).value);
+            
+            const totalScore = significance * probability * severity;
+            
+            // Actualizar puntaje total
+            document.getElementById(`score-${index}`).textContent = totalScore;
+            
+            // Determinar nivel de impacto
+            let impactLevel, badgeClass;
+            if (totalScore <= 8) {
+                impactLevel = 'BAJO';
+                badgeClass = 'badge-low';
+            } else if (totalScore <= 24) {
+                impactLevel = 'MEDIO';
+                badgeClass = 'badge-medium';
+            } else {
+                impactLevel = 'ALTO';
+                badgeClass = 'badge-high';
+            }
+            
+            // Actualizar nivel de impacto
+            document.getElementById(`level-${index}`).innerHTML = `<span class="compliance-badge ${badgeClass}">${impactLevel}</span>`;
+            
+            // Actualizar datos en memoria
+            matrixData[index].significance = significance;
+            matrixData[index].probability = probability;
+            matrixData[index].severity = severity;
+            matrixData[index].totalScore = totalScore;
+            matrixData[index].impactLevel = impactLevel;
+        }
+        
+        function calculateEnvironmentalFootprint() {
+            const loadingElement = document.getElementById('calculate-loading');
+            loadingElement.style.display = 'inline-block';
+            
+            // Simular cálculo (en una implementación real, aquí irían los cálculos reales)
+            setTimeout(() => {
+                // Obtener valores del formulario
+                const companyName = document.getElementById('company-name').value;
+                const sector = document.getElementById('sector').value;
+                const employees = parseInt(document.getElementById('employees').value);
+                const electricity = parseFloat(document.getElementById('electricity').value);
+                const fuel = parseFloat(document.getElementById('fuel').value);
+                const water = parseFloat(document.getElementById('water').value);
+                const waste = parseFloat(document.getElementById('waste').value);
+                const hazardousWaste = parseFloat(document.getElementById('hazardous-waste').value);
+                const transport = parseFloat(document.getElementById('transport').value);
+                
+                // Cálculos simplificados para el ejemplo
+                const carbonFootprint = (electricity * 0.28 + fuel * 2.5 + transport * 0.2) * 12 / 1000;
+                const waterFootprint = water * 12;
+                const wasteFootprint = (waste + hazardousWaste) * 12;
+                
+                // Almacenar resultados
+                currentAIAnalysis = {
+                    companyName,
+                    sector,
+                    employees,
+                    carbonFootprint,
+                    waterFootprint,
+                    wasteFootprint,
+                    calculationDate: new Date().toLocaleDateString('es-EC')
+                };
+                
+                // Mostrar mensaje de éxito
+                alert('Cálculo de huella ambiental completado. Ahora puede proceder a la evaluación de impactos en la pestaña "Matriz AIA".');
+                
+                loadingElement.style.display = 'none';
+            }, 1500);
+        }
+        
+        function evaluateImpacts() {
+            if (!currentAIAnalysis) {
+                alert('Primero debe calcular la huella ambiental en la pestaña "Calculadora Huella".');
+                return;
+            }
+            
+            // Calcular impacto total
+            const totalImpactScore = matrixData.reduce((sum, item) => sum + item.totalScore, 0);
+            const averageImpact = totalImpactScore / matrixData.length;
+            
+            // Determinar nivel general
+            let overallLevel, overallClass;
+            if (averageImpact <= 8) {
+                overallLevel = 'BAJO';
+                overallClass = 'badge-low';
+            } else if (averageImpact <= 24) {
+                overallLevel = 'MEDIO';
+                overallClass = 'badge-medium';
+            } else {
+                overallLevel = 'ALTO';
+                overallClass = 'badge-high';
+            }
+            
+            // Almacenar resultados de la matriz
+            currentAIAnalysis.matrixResults = {
+                matrixData,
+                totalImpactScore,
+                averageImpact,
+                overallLevel
+            };
+            
+            // Mostrar resultados
+            displayResults();
+            
+            // Cambiar a pestaña de resultados
+            document.querySelector('.tab[data-tab="results"]').click();
+        }
+        
+        function displayResults() {
+            const loadingElement = document.getElementById('results-loading');
+            const resultsContent = document.getElementById('results-content');
+            
+            loadingElement.style.display = 'block';
+            resultsContent.style.display = 'none';
+            
+            setTimeout(() => {
+                // Actualizar valores
+                document.getElementById('result-carbon').textContent = currentAIAnalysis.carbonFootprint.toFixed(2) + ' t CO₂e';
+                document.getElementById('result-water').textContent = currentAIAnalysis.waterFootprint.toFixed(0) + ' m³';
+                document.getElementById('result-waste').textContent = currentAIAnalysis.wasteFootprint.toFixed(0) + ' kg';
+                document.getElementById('result-total-impact').textContent = currentAIAnalysis.matrixResults.totalImpactScore;
+                
+                // Mostrar resumen de cumplimiento
+                const complianceSummary = document.getElementById('compliance-summary');
+                complianceSummary.innerHTML = `
+                    <div class="summary-card">
+                        <h3>Nivel de Impacto Ambiental General</h3>
+                        <div class="summary-value">${currentAIAnalysis.matrixResults.overallLevel}</div>
+                        <p>Basado en la evaluación de la Matriz AIA</p>
+                    </div>
+                `;
+                
+                // Mostrar impactos significativos
+                const significantImpacts = document.getElementById('significant-impacts');
+                const highImpacts = matrixData.filter(item => item.impactLevel === 'ALTO');
+                
+                if (highImpacts.length > 0) {
+                    let impactsHTML = '<div class="action-plan">';
+                    highImpacts.forEach(impact => {
+                        impactsHTML += `
+                            <div class="action-item">
+                                <span class="action-priority priority-high">ALTO</span>
+                                <strong>${impact.aspect}</strong>
+                                <p>Actividad: ${impact.activity}</p>
+                                <p>Impacto: ${impact.impact}</p>
+                                <p>Puntaje: ${impact.totalScore}</p>
+                            </div>
+                        `;
+                    });
+                    impactsHTML += '</div>';
+                    significantImpacts.innerHTML = impactsHTML;
+                } else {
+                    significantImpacts.innerHTML = '<p>No se identificaron impactos ambientales significativos (ALTO).</p>';
+                }
+                
+                loadingElement.style.display = 'none';
+                resultsContent.style.display = 'block';
+            }, 1000);
+        }
+        
+        function generateActionPlan() {
+            if (!currentAIAnalysis || !currentAIAnalysis.matrixResults) {
+                alert('Primero debe completar la evaluación de impactos en la pestaña "Matriz AIA".');
+                return;
+            }
+            
+            // Generar plan de acción basado en los impactos identificados
+            const highImpacts = matrixData.filter(item => item.impactLevel === 'ALTO');
+            const actionPlanContent = document.getElementById('action-plan-content');
+            
+            let actionsHTML = '<div class="action-plan">';
+            
+            highImpacts.forEach(impact => {
+                let action, description, deadline;
+                
+                switch(impact.aspect) {
+                    case "Emisiones atmosféricas":
+                        action = "Implementar sistema de control de emisiones";
+                        description = "Instalar filtros y sistemas de tratamiento de gases en procesos de combustión.";
+                        deadline = "4 meses";
+                        break;
+                    case "Consumo de agua":
+                        action = "Optimización del uso de agua";
+                        description = "Implementar sistemas de recirculación y medición de consumo por proceso.";
+                        deadline = "6 meses";
+                        break;
+                    case "Generación de residuos peligrosos":
+                        action = "Plan de gestión de residuos peligrosos";
+                        description = "Establecer procedimientos para manejo, almacenamiento y disposición final segura.";
+                        deadline = "3 meses";
+                        break;
+                    default:
+                        action = "Mitigar impacto ambiental";
+                        description = "Desarrollar e implementar medidas específicas para reducir el impacto identificado.";
+                        deadline = "6 meses";
+                }
+                
+                actionsHTML += `
+                    <div class="action-item">
+                        <span class="action-priority priority-high">ALTA</span>
+                        <strong>${action}</strong>
+                        <p>${description}</p>
+                        <p><strong>Plazo:</strong> ${deadline}</p>
+                    </div>
+                `;
+            });
+            
+            // Agregar acciones para impactos medios si no hay altos
+            if (highImpacts.length === 0) {
+                const mediumImpacts = matrixData.filter(item => item.impactLevel === 'MEDIO');
+                mediumImpacts.slice(0, 2).forEach(impact => {
+                    actionsHTML += `
+                        <div class="action-item">
+                            <span class="action-priority priority-medium">MEDIA</span>
+                            <strong>Mejorar gestión de ${impact.aspect.toLowerCase()}</strong>
+                            <p>Implementar mejores prácticas y controles para el aspecto identificado.</p>
+                            <p><strong>Plazo:</strong> 8 meses</p>
+                        </div>
+                    `;
+                });
+            }
+            
+            actionsHTML += '</div>';
+            actionPlanContent.innerHTML = actionsHTML;
+            
+            alert('Plan de acción generado exitosamente basado en los impactos identificados.');
+        }
+        
+        function downloadFullReport() {
+            if (!currentAIAnalysis || !currentAIAnalysis.matrixResults) {
+                alert('Primero debe completar el análisis en todas las pestañas anteriores.');
+                return;
+            }
+            
+            const loadingElement = document.getElementById('download-loading');
+            loadingElement.style.display = 'inline-block';
+            document.getElementById('download-full-report').disabled = true;
+            
+            // En una implementación real, aquí se generaría el PDF completo
+            setTimeout(() => {
+                alert('Reporte AIA generado exitosamente. En una implementación real, se descargaría un PDF con toda la información.');
+                
+                loadingElement.style.display = 'none';
+                document.getElementById('download-full-report').disabled = false;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
